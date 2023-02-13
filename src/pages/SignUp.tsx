@@ -10,13 +10,19 @@ import PasswordField from '../shared/PasswordField';
 type FormValues = {
     email: string;
     password: string;
+    confirmPassword: string;
+    name: string;
 };
 const schema = yup.object({
     email: userRules.password.required(),
     password: userRules.password.required(),
+    confirmPassword: userRules.password
+        .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+        .required(),
+    name: userRules.name.required(),
 });
 
-const Login: FC<{}> = () => {
+const SignUp: FC<{}> = () => {
     const {
         register,
         handleSubmit,
@@ -41,15 +47,15 @@ const Login: FC<{}> = () => {
                 style={{ borderRadius: '60px' }}
             >
                 <div className="flex flex-col w-full justify-start gap-3 px-24 py-36">
-                    <span className="text-4xl">Login</span>
+                    <span className="text-4xl">Create an account</span>
                     <div className="">
                         <p className="text-base">
-                            New visitor?{' '}
+                            Already have an account?{' '}
                             <Link
                                 className="text-default-detail text-base cursor-pointer"
-                                to="/sign-up"
+                                to="/login"
                             >
-                                Create an account
+                                Login
                             </Link>{' '}
                             here
                         </p>
@@ -58,6 +64,21 @@ const Login: FC<{}> = () => {
                         onSubmit={handleSubmit(onSubmit)}
                         className="flex flex-col items-start gap-5"
                     >
+                        <div className="flex flex-col w-full">
+                            <input
+                                className="border-b w-full focus:outline-none"
+                                type="text"
+                                placeholder="Name"
+                                {...register('name')}
+                            />
+                            {errors.name && (
+                                <div className="-mt-1">
+                                    <span className="text-red-600 text-xs">
+                                        {errors.name.message}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                         <div className="flex flex-col w-full">
                             <input
                                 className="border-b w-full focus:outline-none"
@@ -86,17 +107,22 @@ const Login: FC<{}> = () => {
                                         </span>
                                     </div>
                                 )}
+                            </div>
+                        </div>
 
-                                <p className="text-xs">
-                                    Click{' '}
-                                    <Link
-                                        className="text-default-detail text-xs cursor-pointer"
-                                        to="/recover-password"
-                                    >
-                                        here
-                                    </Link>{' '}
-                                    in case you forget your password
-                                </p>
+                        <div className="flex flex-col w-full items-end">
+                            <div className="flex flex-col w-full">
+                                <PasswordField
+                                    register={register}
+                                    placeholder="Confirm Password"
+                                />
+                                {errors.confirmPassword && (
+                                    <div className="-mt-1">
+                                        <span className="text-red-600 text-xs">
+                                            {errors.confirmPassword.message}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -104,7 +130,7 @@ const Login: FC<{}> = () => {
                             <input
                                 className="bg-default-detail py-3 w-1/2 rounded-lg cursor-pointer hover:bg-default-detail_hover"
                                 type="submit"
-                                value="Login"
+                                value="SignUp"
                             />
                         </div>
                     </form>
@@ -114,4 +140,4 @@ const Login: FC<{}> = () => {
     );
 };
 
-export default Login;
+export default SignUp;
