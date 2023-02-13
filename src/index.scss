@@ -1,0 +1,23 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+    :root {
+        --color-darker-msg-text: 201, 237, 239; //#c9edef
+        --color-darker-msg-user-bg: 1, 92, 74; //#015c4a
+        --color-darker-msg-time-text: 131, 162, 172; //#83a2ac
+        --color-darker-msg-number-text: 134, 150, 160; //#8696a0
+        --color-darker-user-input: 208, 214, 219; //#d0d6db
+        --color-darker-user-name-text: 233, 237, 209; //#e9edd1
+        --color-darker-alert-text: 230, 0, 35; //#e60023
+        --color-darker-detail-bg: 0, 92, 75; //#005c4b
+        --color-darker-detail-hover-bg: 11, 135, 112; //#0b8770
+        --color-darker-solid-bg: 32, 45, 50; //#202d32
+        --color-darker-chat-bg: 11, 21, 27; //#0b151b
+        --color-darker-list-bg: 16, 26, 33; //#101a21
+        --color-darker-selected-bg: 43, 56, 66; //#2b3842
+
+        --text-size-base: 10px;
+    }
+}
