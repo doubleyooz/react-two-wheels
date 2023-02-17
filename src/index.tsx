@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { AuthProvider } from './context/AuthContext';
 import './index.scss';
 import Routes from './routes';
 //import reportWebVitals from './reportWebVitals';
@@ -9,7 +10,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
     <React.StrictMode>
-        <Routes />
+        <AuthProvider>
+            <Routes />
+        </AuthProvider>
     </React.StrictMode>
 );
 

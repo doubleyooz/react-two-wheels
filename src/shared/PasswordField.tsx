@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { UseFormRegister } from 'react-hook-form';
-import { AiFillLock } from 'react-icons/ai';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { UserLogin, UserSignUp } from './utils/user.util';
 type FormType = UserLogin & UserSignUp;

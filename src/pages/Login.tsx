@@ -1,18 +1,19 @@
-import { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { FC, useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, UseFormRegister } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { userRules } from '../shared/utils/user.util';
+import { UserLogin, userRules } from '../shared/utils/user.util';
 import LoginImage from '../assets/login-1.png';
 import PasswordField from '../shared/PasswordField';
+import AuthContext from '../context/AuthContext';
 
 type FormValues = {
     email: string;
     password: string;
 };
 const schema = yup.object({
-    email: userRules.password.required(),
+    email: userRules.email.required(),
     password: userRules.password.required(),
 });
 
@@ -25,13 +26,24 @@ const Login: FC<{}> = () => {
         resolver: yupResolver(schema),
     });
 
-    const onSubmit = async (data: FormValues) => {
+    const { handleSignIn, token } = useContext(AuthContext);
+
+    const nav = useNavigate();
+
+    const onSubmit = async (data: UserLogin) => {
         console.log(data);
 
-        //const result = await handleSignIn(data.email, data.password);
+        await handleSignIn(data.email, data.password);
 
-        //console.log(result);
+        nav('/');
     };
+
+    useEffect(() => {
+        console.log(token);
+        if (token) {
+            nav('/');
+        }
+    }, [token, nav]);
 
     return (
         <div className="flex">
@@ -87,7 +99,7 @@ const Login: FC<{}> = () => {
                                     </div>
                                 )}
 
-                                <p className="text-xs">
+                                <p className="text-right text-xs">
                                     Click{' '}
                                     <Link
                                         className="text-default-detail text-xs cursor-pointer"
