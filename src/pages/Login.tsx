@@ -89,6 +89,7 @@ const Login: FC<{}> = () => {
                             <div className="flex flex-col w-full">
                                 <PasswordField
                                     register={register}
+                                    value="password"
                                     placeholder="Password"
                                 />
                                 {errors.password && (

@@ -1,11 +1,12 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, UseFormRegister } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { userRules } from '../shared/utils/user.util';
 import LoginImage from '../assets/login-1.png';
 import PasswordField from '../shared/PasswordField';
+import { signUp } from '../services/auth.service';
 
 type FormValues = {
     email: string;
@@ -14,7 +15,7 @@ type FormValues = {
     name: string;
 };
 const schema = yup.object({
-    email: userRules.password.required(),
+    email: userRules.email.required(),
     password: userRules.password.required(),
     confirmPassword: userRules.password
         .oneOf([yup.ref('password'), undefined], 'Passwords must match')
@@ -31,12 +32,14 @@ const SignUp: FC<{}> = () => {
         resolver: yupResolver(schema),
     });
 
+    const nav = useNavigate();
+
     const onSubmit = async (data: FormValues) => {
         console.log(data);
 
-        //const result = await handleSignIn(data.email, data.password);
+        await signUp(data.email, data.name, data.password);
 
-        //console.log(result);
+        nav('/login');
     };
 
     return (
@@ -98,6 +101,7 @@ const SignUp: FC<{}> = () => {
                             <div className="flex flex-col w-full">
                                 <PasswordField
                                     register={register}
+                                    value="password"
                                     placeholder="Password"
                                 />
                                 {errors.password && (
@@ -114,6 +118,7 @@ const SignUp: FC<{}> = () => {
                             <div className="flex flex-col w-full">
                                 <PasswordField
                                     register={register}
+                                    value="confirmPassword"
                                     placeholder="Confirm Password"
                                 />
                                 {errors.confirmPassword && (
@@ -130,7 +135,7 @@ const SignUp: FC<{}> = () => {
                             <input
                                 className="bg-default-detail py-3 w-1/2 rounded-lg cursor-pointer hover:bg-default-detail_hover"
                                 type="submit"
-                                value="SignUp"
+                                value="Register Account"
                             />
                         </div>
                     </form>

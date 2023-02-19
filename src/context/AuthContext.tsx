@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log('authContext');
             console.log(response);
             if (response) {
-                setToken(response.data.metadata.accessToken);
+                setToken(response.data.accessToken);
             } else {
                 throw new Error('login failed');
             }

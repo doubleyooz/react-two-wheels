@@ -34,11 +34,9 @@ const signIn = async (email: string, password: string) => {
 
 const signUp = async (email: string, name: string, password: string) => {
     return await api.post(`/users`, {
-        auth: {
-            username: email,
-            name: name,
-            password: password,
-        },
+        email: email,
+        name: name,
+        password: password,
     });
 };
 
