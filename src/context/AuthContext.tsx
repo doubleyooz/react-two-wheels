@@ -14,7 +14,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState<string>('');
     const [loading, setLoading] = useState(true);
 
     async function handleSignIn(email: string, password: string) {
@@ -23,7 +23,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log('authContext');
             console.log(response);
             if (response) {
-                setToken(response.data.accessToken);
+                localStorage.setItem('picture', response.data.data.profile);
+                setToken(response.data.metadata.accessToken);
             } else {
                 throw new Error('login failed');
             }
