@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 axios.defaults.headers.common[
     'Access-Control-Allow-Origin'
@@ -15,10 +15,10 @@ const api: AxiosInstance = axios.create({
     baseURL: process.env.REACT_APP_AUTH_SERVER,
 });
 
-const config = (token: string) => {
+const config = (token: string): AxiosRequestConfig => {
     return {
         headers: {
-            Authorization: `Basic ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     };
 };
@@ -40,8 +40,21 @@ const signUp = async (email: string, name: string, password: string) => {
     });
 };
 
+const findOneUser = async (_id: string, token: string) => {
+    return await api.get(`/users/${_id}`, config(token));
+};
+
+const findUsers = async (token: string, name?: string) => {
+    const url = name ? `/users?name=${name}` : '/users';
+    return await api.get(url, config(token));
+};
+
 const refreshToken = async () => {
     return await api.get('/refresh-token', { withCredentials: true });
 };
 
-export { refreshToken, signIn, signUp };
+const revokeToken = async () => {
+    return await api.get('/revoke-token', { withCredentials: true });
+};
+
+export { findOneUser, findUsers, refreshToken, revokeToken, signIn, signUp };

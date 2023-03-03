@@ -1,19 +1,26 @@
 import { FC, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import { useCheckAuth } from '../shared/hooks/useCheckAuth';
+import { useFetchData } from '../shared/hooks/useFetchData';
+import Loading from '../shared/Loading';
 
 const Home: FC<{}> = () => {
-    const { token } = useContext(AuthContext);
-    const nav = useNavigate();
-
+    const token = useFetchData();
+    const { userData } = useContext(AuthContext);
     useEffect(() => {
-        console.log(token);
-        if (!token) {
-            nav('/login');
-        }
-    }, [token, nav]);
-
-    return <div>Home</div>;
+        const fetchData = async () => {};
+        console.log('retrieve chat');
+        fetchData();
+    }, []);
+    console.log(token);
+    switch (token) {
+        case null:
+        case undefined:
+            return <Loading />;
+        default:
+            return <div>Home</div>;
+    }
 };
 
 export default Home;

@@ -7,6 +7,8 @@ import { UserLogin, userRules } from '../shared/utils/user.util';
 import LoginImage from '../assets/login-1.png';
 import PasswordField from '../shared/PasswordField';
 import AuthContext from '../context/AuthContext';
+import { useCheckAuth } from '../shared/hooks/useCheckAuth';
+import Loading from '../shared/Loading';
 
 type FormValues = {
     email: string;
@@ -26,24 +28,24 @@ const Login: FC<{}> = () => {
         resolver: yupResolver(schema),
     });
 
-    const { handleSignIn, token } = useContext(AuthContext);
+    const { signIn, userData } = useContext(AuthContext);
 
+    const token = useCheckAuth();
     const nav = useNavigate();
+
+    if (token) {
+        return <Loading />;
+    }
+ 
 
     const onSubmit = async (data: UserLogin) => {
         console.log(data);
 
-        await handleSignIn(data.email, data.password);
+        await signIn(data.email, data.password);
 
         nav('/');
     };
-
-    useEffect(() => {
-        console.log(token);
-        if (token) {
-            nav('/');
-        }
-    }, [token, nav]);
+    
 
     return (
         <div className="flex">

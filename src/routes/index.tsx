@@ -1,5 +1,5 @@
-import React, { Suspense, useContext, useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import React, { Suspense, useContext, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import AuthContext from '../context/AuthContext';
 
@@ -7,10 +7,10 @@ import Home from '../pages/Home';
 import Login from '../pages/Login';
 import SignUp from '../pages/SignUp';
 import { refreshToken } from '../services/auth.service';
+import Loading from '../shared/Loading';
 
 const Paths: React.FC = () => {
-    const { token, setToken } = useContext(AuthContext);
-    const [loading, setLoading] = useState(true);
+    const { userData, setUserData } = useContext(AuthContext);
 
     const location = useLocation();
 
@@ -19,23 +19,28 @@ const Paths: React.FC = () => {
     );
 
     useEffect(() => {
-        const checkAuth = async () => {
-            if (!token) {
+        const fetchData = async () => {
+            if (!userData.token) {
                 try {
-                    const result = await refreshToken();
-                    if (result) setToken(result.data.metadata.accessToken);
-                } catch {}
+                    const response = await refreshToken();
+                    console.log(response.data);
+                    if (response)
+                        setUserData((prevState) => ({
+                            ...prevState,
+                            _id: response.data.data._id ?? null,
+                            token: response.data.metadata.accessToken ?? null,
+                        }));
+                } catch (err) {
+                    console.log(err);
+                }
             }
-            setLoading(false);
         };
-
-        checkAuth();
-    }, []);
-
-    if (loading) return <div>Loading...</div>;
+        console.log(userData.token);
+        fetchData();
+    }, [userData, setUserData]);
 
     return (
-        <Suspense fallback={<div>Loading ...</div>}>
+        <Suspense fallback={<Loading />}>
             <div className="h-screen w-screen">
                 {shouldRenderHeader && <Header />}
 

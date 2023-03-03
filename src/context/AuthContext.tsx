@@ -1,48 +1,64 @@
 import React, { createContext, useState } from 'react';
 
-import { signIn } from '../services/auth.service';
+import { findOneUser, signIn } from '../services/auth.service';
 
-interface AuthContextData {
-    token: string;
+export interface AuthUserContext {
+    userData: UserData;
     loading: boolean;
-    setToken: React.Dispatch<React.SetStateAction<string>>;
-    handleSignIn(email: string, password: string): Promise<void>;
+    setUserData: React.Dispatch<React.SetStateAction<UserData>>;
+    signIn(email: string, password: string): Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+export interface UserData {
+    token: string | null;
+    email: string | null;
+    _id: string | null;
+    picture: string | null;
+    name: string | null;
+}
+
+const AuthContext = createContext<AuthUserContext>({} as AuthUserContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [token, setToken] = useState<string>('');
-    const [loading, setLoading] = useState(true);
+    const [userData, setUserData] = useState<UserData>({
+        name: null,
+        token: null,
+        email: null,
+        _id: null,
+        picture: null,
+    });
+    const [loading, setLoading] = useState<boolean>(true);
 
     async function handleSignIn(email: string, password: string) {
         try {
-            const response = await signIn(email, password);
-            console.log('authContext');
-            console.log(response);
-            if (response) {
-                localStorage.setItem('picture', response.data.data.profile);
-                setToken(response.data.metadata.accessToken);
-            } else {
-                throw new Error('login failed');
-            }
+            const authResponse = await signIn(email, password);
+
+            console.log(authResponse);
+            if (authResponse) {
+                setUserData((prevState) => ({
+                    ...prevState,
+                    _id: authResponse.data.data._id,
+                    token: authResponse.data.metadata.accessToken,
+                }));
+            } else throw new Error('Login failed');
         } catch (error) {
-            console.error(error);
-            throw new Error('login failed');
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
+
+    const contextValue: AuthUserContext = {
+        setUserData,
+        signIn: handleSignIn,
+        userData,
+        loading,
+    };
+
     return (
-        <AuthContext.Provider
-            value={{
-                token,
-                handleSignIn: handleSignIn,
-                setToken,
-                loading,
-            }}
-        >
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );

@@ -7,6 +7,8 @@ import { userRules } from '../shared/utils/user.util';
 import LoginImage from '../assets/login-1.png';
 import PasswordField from '../shared/PasswordField';
 import { signUp } from '../services/auth.service';
+import { useCheckAuth } from '../shared/hooks/useCheckAuth';
+import Loading from '../shared/Loading';
 
 type FormValues = {
     email: string;
@@ -33,6 +35,11 @@ const SignUp: FC<{}> = () => {
     });
 
     const nav = useNavigate();
+    const token = useCheckAuth();
+    if (token) {
+        return <Loading />;
+    }
+ 
 
     const onSubmit = async (data: FormValues) => {
         console.log(data);
